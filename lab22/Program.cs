@@ -70,13 +70,6 @@ namespace lab22
             Console.WriteLine($"Максимальное число {max}");
         }
 
-    }
-        //static void PrintArrey(int[]array)
-        //{
-        //    for()
-        //}
-
-
 
 
 
