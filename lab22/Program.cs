@@ -16,22 +16,16 @@ namespace lab22
         static void Main(string[] args)
 
         {
+            Console.WriteLine("Введите размерность");
             int n = Convert.ToInt32(Console.ReadLine());
             Func<object, int[]> func1 = new Func<object, int[]>(GetArray);
             Task<int[]> task1 = new Task<int[]>(func1, n);
 
- Action<Task<int>> func2 = new Action<Task<int>>(Metod1);
-            Task task2 = task1.ContinueWith<int[]>(Action);
-            task2.Start();
+            Action<Task<int[]>> func2 = new Action<Task<int[]>>(Metod1);
+            Task task2 = task1.ContinueWith(func2);
 
-
-            Func<Task<int[]>, int[]> func3 = new Func<Task<int[]>, int[]>(Metod2);
-            Task<int[]> task3 = task2.ContinueWith<int[]>(func3, array);
-            task3.Start();
-
-
-
-
+            Action<Task<int[]>> func3 = new Action<Task<int[]>>(Metod2);
+            Task task3 = task1.ContinueWith(func3);
 
             task1.Start();
             Console.ReadKey();
@@ -39,6 +33,7 @@ namespace lab22
 
         static int[] GetArray(object a)
         {
+
             int n = (int)a;
             int[] array = new int[n];
             Random random = new Random();
@@ -46,39 +41,36 @@ namespace lab22
 
             {
                 array[i] = random.Next(0, 98);
+                Console.Write($"{array[i]} ");
             }
+            Console.WriteLine();
             return array;
         }
-        static int[] Metod1(Task <int>  task)
-        {
-            Console.WriteLine("сумма чисел массива...");
-            int n = task.Result;
-            int s = 0;
-            for (int i = 0; i < n; i++)
-            {
-                s += i;
-                Thread.Sleep(200);
-            }
-            Console.WriteLine($"Сумма = {s}");
-            return n;
-        }
-        static int[] Metod2(Task <int[]> task)
+        static void Metod1(Task<int[]> task)
         {
             int[] array = task.Result;
-            int max = (int)array[0];
-            for (int i = 0; i > array; i++)
+            int s = 0;
+            for (int i = 0; i < array.Length; i++)
             {
-                if (arrey[i] > max)
+                s += array[i];
+            }
+            Console.WriteLine($"Сумма = {s}");
+        }
+        static void Metod2(Task<int[]> task)
+        {
+            int[] array = task.Result;
+            int max = array[0];
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i] > max)
                 {
                     max = array[i];
-
                 }
             }
-            
-            Console.WriteLine($"Максимальное число  + {array}");
-            return array;
-
+            Console.WriteLine($"Максимальное число {max}");
         }
+
+    }
         //static void PrintArrey(int[]array)
         //{
         //    for()
